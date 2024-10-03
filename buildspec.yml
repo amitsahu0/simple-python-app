@@ -1,0 +1,25 @@
+version: 0.2
+env:
+  parameter-store:
+    DOCKER_REGISTRY_USERNAME: /myapp/docker-credentias/username
+    DOCKER_REGISTRY_PASSWORD: /myapp/docker-credentias/password
+    DOCKER_REGISTRY_URL: /myapp/docker-registry/url
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11  # Specify the Python version you need
+
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+
+  build:
+    commands:
+      - echo "Building Docker image"
+      - docker build -t $DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/sample-python-flask-app:latest
+      - docker push $DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/sample-python-flask-app:latest
+
+  post_build:
+    commands:
+      - echo "Build is successful"
